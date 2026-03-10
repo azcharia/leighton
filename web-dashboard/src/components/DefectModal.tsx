@@ -107,8 +107,19 @@ export function DefectModal({ defect, onClose, onSave }: Props) {
             </div>
           </div>
 
-          {/* RIGHT — Editable AI Predictions */}
+          {/* RIGHT — Editable fields */}
           <div className="flex flex-col gap-5">
+            {/* Location */}
+            <Field label="Location">
+              <input
+                type="text"
+                value={form.location ?? ''}
+                onChange={(e) => handleChange('location', e.target.value || null)}
+                placeholder="e.g. Block B, Level 3, Column C4"
+                className="input"
+              />
+            </Field>
+
             <div>
               <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
                 <span className="inline-block w-2 h-2 rounded-full bg-[#003A8C]" />

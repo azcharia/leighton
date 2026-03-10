@@ -57,7 +57,23 @@ Deno.serve(async (req: Request) => {
               content: [
                 {
                   type: "text",
-                  text: `Analyze this construction defect. Context from engineer on site: "${audio_transcript ?? "No verbal context provided."}"`,
+                  text: `You are an expert construction QA engineer specialising in concrete defects for Leighton Asia. Analyse this site photo and classify the defect.
+
+Concrete defect categories to consider:
+- Honeycombing / concrete voids (poor vibration, congested rebar, low workability)
+- Exposed reinforcement / insufficient cover (critical durability issue)
+- Uneven finish / laitance (aesthetic + coating adhesion risk)
+- Cold joints / step joints (poor pour sequencing or delays)
+- Residual formwork, nails, or tie-bolt holes (poor post-pour cleaning)
+- Cracks and surface damage (shrinkage cracks, edge damage, chipping)
+
+Engineer's voice note from site: "${audio_transcript ?? 'No verbal context provided.'}"
+
+Classify the defect:
+- defect_type: use the closest category name above, or describe accurately if none match
+- priority: Critical (structural risk) / High (durability concern) / Medium (quality issue) / Low (cosmetic)
+- responsible_trade: e.g. Concrete Contractor, Formwork Subcontractor, Civil Engineer
+- suggested_action: short, actionable remediation step (e.g. 'Hack out and patch with non-shrink grout', 'Increase cover and re-inspect')`,`
                 },
                 {
                   type: "image_url",

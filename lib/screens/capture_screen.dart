@@ -38,6 +38,9 @@ class _CaptureScreenState extends State<CaptureScreen>
   bool _isRecording = false;
   String? _audioPath;
 
+  // Location
+  final TextEditingController _locationController = TextEditingController();
+
   // Workflow state
   _ScreenState _screenState = _ScreenState.viewfinder;
   String _statusMessage = '';
@@ -55,6 +58,7 @@ class _CaptureScreenState extends State<CaptureScreen>
     WidgetsBinding.instance.removeObserver(this);
     _cameraController?.dispose();
     _audioRecorder.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
@@ -95,7 +99,10 @@ class _CaptureScreenState extends State<CaptureScreen>
   // ── Pick from Gallery ────────────────────────────────────────────────────
   Future<void> _pickFromGallery() async {
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 90,
+    );
     if (image == null) return;
     setState(() {
       _capturedImage = XFile(image.path);
@@ -219,6 +226,10 @@ class _CaptureScreenState extends State<CaptureScreen>
             transcript.isNotEmpty
                 ? transcript
                 : 'No verbal description provided.',
+        'location':
+            _locationController.text.trim().isEmpty
+                ? null
+                : _locationController.text.trim(),
         'status': 'Pending AI',
       });
 
@@ -240,6 +251,7 @@ class _CaptureScreenState extends State<CaptureScreen>
   }
 
   void _reset() {
+    _locationController.clear();
     setState(() {
       _capturedImage = null;
       _audioPath = null;
@@ -295,7 +307,11 @@ class _CaptureScreenState extends State<CaptureScreen>
           // Gallery button
           IconButton(
             onPressed: _pickFromGallery,
-            icon: const Icon(Icons.photo_library_outlined, color: Colors.white, size: 32),
+            icon: const Icon(
+              Icons.photo_library_outlined,
+              color: Colors.white,
+              size: 32,
+            ),
             tooltip: 'Pick from gallery',
           ),
 
@@ -360,6 +376,32 @@ class _CaptureScreenState extends State<CaptureScreen>
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
+              // Location input
+              TextField(
+                controller: _locationController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Location (e.g. Block B, Level 3, Col C4)',
+                  hintStyle: const TextStyle(color: Colors.white38),
+                  prefixIcon: const Icon(
+                    Icons.location_on_outlined,
+                    color: Colors.white54,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white10,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
               // Status feedback
               if (_statusMessage.isNotEmpty)
                 Padding(

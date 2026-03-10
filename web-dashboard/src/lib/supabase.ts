@@ -11,6 +11,7 @@ export interface Defect {
   created_at: string
   image_url: string
   audio_transcript: string
+  location: string | null
   defect_type: string | null
   priority: 'Low' | 'Medium' | 'High' | 'Critical' | null
   responsible_trade: string | null

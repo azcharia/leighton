@@ -85,7 +85,7 @@ export default function App() {
   // ── Export to CSV (opens natively in Excel) ───────────────────────────
   const exportToExcel = () => {
     const headers = [
-      'ID', 'Created At', 'Defect Type', 'Priority',
+      'ID', 'Created At', 'Location', 'Defect Type', 'Priority',
       'Responsible Trade', 'Suggested Action', 'Status',
       'Transcript', 'Image URL',
     ]
@@ -93,6 +93,7 @@ export default function App() {
     const rows = defects.map((d) => [
       d.id,
       new Date(d.created_at).toLocaleString(),
+      d.location ?? '-',
       d.defect_type ?? '-',
       d.priority ?? '-',
       d.responsible_trade ?? '-',
@@ -117,6 +118,7 @@ export default function App() {
     const { error } = await supabase
       .from('defects')
       .update({
+        location:          updated.location,
         defect_type:       updated.defect_type,
         priority:          updated.priority,
         responsible_trade: updated.responsible_trade,
@@ -215,6 +217,7 @@ export default function App() {
                     'Defect Type',
                     'Priority',
                     'Trade',
+                    'Location',
                     'Status',
                     '',
                   ].map((h) => (
@@ -270,6 +273,9 @@ export default function App() {
                     </td>
                     <td className="px-4 py-3 text-gray-600">
                       {defect.responsible_trade ?? '—'}
+                    </td>
+                    <td className="px-4 py-3 text-gray-500 text-xs">
+                      {defect.location ?? '—'}
                     </td>
                     <td className="px-4 py-3">
                       <span
