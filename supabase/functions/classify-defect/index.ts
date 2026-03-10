@@ -73,7 +73,7 @@ Classify the defect:
 - defect_type: use the closest category name above, or describe accurately if none match
 - priority: Critical (structural risk) / High (durability concern) / Medium (quality issue) / Low (cosmetic)
 - responsible_trade: e.g. Concrete Contractor, Formwork Subcontractor, Civil Engineer
-- suggested_action: short, actionable remediation step (e.g. 'Hack out and patch with non-shrink grout', 'Increase cover and re-inspect')`,`
+- suggested_action: short, actionable remediation step (e.g. 'Hack out and patch with non-shrink grout', 'Increase cover and re-inspect')`,
                 },
                 {
                   type: "image_url",
