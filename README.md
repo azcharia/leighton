@@ -3,6 +3,27 @@
 A hackathon-ready, production-quality MVP that replaces manual construction
 site form-filling with AI-powered defect logging.
 
+**Live Demo:** https://leighton.vercel.app
+
+---
+
+## Features
+
+✅ **Fast Defect Capture** — Photo (camera or gallery) + optional voice note
+✅ **AI Concrete Classification** — Classifies against 6 concrete defect types:
+   - Honeycombing / concrete voids
+   - Exposed reinforcement / insufficient cover
+   - Uneven finish / laitance
+   - Cold joints / step joints
+   - Residual formwork, nails, or tie-bolt holes
+   - Cracks and surface damage
+
+✅ **Editable AI Predictions** — Engineers can override AI suggestions in the dashboard
+✅ **Location Tagging** — Record defect location (e.g. Block B, Level 3, Column C4)
+✅ **Real-time Dashboard** — Live updates visible across all browsers
+✅ **Export to Excel** — CSV with all defect data for further analysis
+✅ **Secure Architecture** — All credentials injected at runtime, never in source code
+
 ---
 
 ## Architecture
@@ -85,22 +106,30 @@ leighton/                              ← Flutter root
    - `<SERVICE_ROLE_KEY>` → **Settings → API → service_role** secret
 
 3. Run the committed migration SQL in the **SQL Editor**
-   (`supabase/migrations/20260308000000_initial_schema.sql`).
+   (`supabase/migrations/20260308000000_initial_schema.sql` and `20260310000001_add_location.sql`).
    It reads secrets from Vault at runtime — no credentials in the file.
 
 4. Deploy the Edge Function:
    ```bash
+   npx supabase login
+   npx supabase link --project-ref xihnrzavtnzpmdsqrjyo
+   npx supabase secrets set GROQ_API_KEY=<your-groq-api-key>
    npx supabase functions deploy classify-defect
-   ```
-
-5. Set the Groq key as an Edge Function secret in **Settings → Edge Function Secrets**:
-   ```
-   GROQ_API_KEY=<your-groq-api-key>
    ```
 
 ---
 
 ### 2. Flutter Mobile App
+
+**Workflow:**
+1. Tap the **camera button** to capture a photo in real-time, or the **gallery icon** to pick from your device
+2. Enter the **location** (e.g. Block B, Level 3, Column C4)
+3. Hold the **microphone button** to record a voice note describing the defect
+4. Tap **Submit Defect** → app uploads to Supabase
+5. Database trigger fires → Edge Function classifies with Groq Vision AI
+6. Status changes to "Processed" with AI predictions auto-filled
+
+**Setup:**
 
 1. Create a local `dart_defines.json` file **(never commit this)**:
    ```json
@@ -124,7 +153,7 @@ leighton/                              ← Flutter root
    ```
 
 **Android minimum SDK:** Ensure `android/app/build.gradle.kts` has
-`minSdk = 21` (needed for the `record` plugin).
+`minSdk = 23` (required by the `record` plugin for audio recording).
 
 ---
 
@@ -136,19 +165,57 @@ leighton/                              ← Flutter root
    cp .env.example .env
    # Edit .env with your Supabase URL and anon key
    ```
-2. Install and run:
+2. Install and run locally:
    ```bash
    npm install
    npm run dev
    ```
+   Open `http://localhost:5173`
+
 3. Build for production:
    ```bash
    npm run build
    ```
 
+4. **(Optional) Deploy to Vercel:**
+   - Push code to GitHub
+   - Go to https://vercel.com → Click **Add New** → **Project**
+   - Select `azcharia/leighton` repo, set **Root Directory** to `web-dashboard`
+   - Add environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+   - Click **Deploy** (live in ~2 min)
+   - Your dashboard will be at `https://<project>.vercel.app`
+
 ---
 
-## Key Credentials Summary
+## Deployment Checklist
+
+- [ ] Supabase project created + migrations applied
+- [ ] Edge Function deployed with Groq API key set
+- [ ] Flutter app tested on Android emulator/device
+- [ ] React dashboard deployed to Vercel (or running locally)
+- [ ] `.env` files and `dart_defines.json` are in `.gitignore`
+- [ ] GitHub repository public with all code pushed
+- [ ] Demo video recorded (defect submission → AI classification → dashboard)
+
+---
+
+## Hackathon Submission
+
+**Required deliverables:**
+1. **Working prototype link:** https://leighton.vercel.app (or localhost if running locally)
+2. **Source code:** Push to GitHub → submit repo link
+3. **Demo recording:** Show defect capture → AI classification in dashboard
+4. **Documentation:** This README covers setup and architecture
+
+**To submit:**
+```bash
+# Compress everything
+zip -r leighton_<yourname>.zip . -x ".env*" "dart_defines.json" "node_modules" "build" "dist"
+
+# Send to marketing@helden-inc.com
+```
+
+---
 
 > ⚠️ **None of these values should ever appear in committed files.**
 > All secrets are injected at runtime via the methods below.
@@ -172,10 +239,3 @@ leighton/                              ← Flutter root
 |---|---|
 | Audio Transcription | `whisper-large-v3-turbo` via Groq |
 | Vision + Classification | `meta-llama/llama-4-scout-17b-16e-instruct` via Groq |
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
