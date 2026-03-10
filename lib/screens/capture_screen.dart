@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -89,6 +90,18 @@ class _CaptureScreenState extends State<CaptureScreen>
     } catch (e) {
       _setStatus('Camera error: $e');
     }
+  }
+
+  // ── Pick from Gallery ────────────────────────────────────────────────────
+  Future<void> _pickFromGallery() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+    if (image == null) return;
+    setState(() {
+      _capturedImage = XFile(image.path);
+      _screenState = _ScreenState.preview;
+      _audioPath = null;
+    });
   }
 
   // ── Take Photo ─────────────────────────────────────────────────────────────
@@ -277,8 +290,15 @@ class _CaptureScreenState extends State<CaptureScreen>
       color: Colors.black,
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          // Gallery button
+          IconButton(
+            onPressed: _pickFromGallery,
+            icon: const Icon(Icons.photo_library_outlined, color: Colors.white, size: 32),
+            tooltip: 'Pick from gallery',
+          ),
+
           // Shutter button
           GestureDetector(
             onTap: _takePhoto,
@@ -298,6 +318,9 @@ class _CaptureScreenState extends State<CaptureScreen>
               ),
             ),
           ),
+
+          // Placeholder to balance the row
+          const SizedBox(width: 48),
         ],
       ),
     );
