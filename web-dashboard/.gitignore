@@ -1,0 +1,10 @@
+# Local environment secrets — never commit these
+.env
+.env.local
+.env.production
+.env.staging
+
+# Build output
+dist/
+node_modules/
+dart_defines
