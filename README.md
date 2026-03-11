@@ -3,7 +3,13 @@
 A hackathon-ready, production-quality MVP that replaces manual construction
 site form-filling with AI-powered defect logging.
 
-**Live Demo:** https://leighton.vercel.app
+## 🚀 Quick Links for Judges
+
+| Action | Link |
+|---|---|
+| **Try the app** | https://leighton.vercel.app |
+| **View source code** | https://github.com/azcharia/leighton |
+| **Demo video** | Included in submission ZIP |
 
 ---
 
@@ -201,19 +207,32 @@ leighton/                              ← Flutter root
 
 ## Hackathon Submission
 
-**Required deliverables:**
-1. **Working prototype link:** https://leighton.vercel.app (or localhost if running locally)
-2. **Source code:** Push to GitHub → submit repo link
-3. **Demo recording:** Show defect capture → AI classification in dashboard
-4. **Documentation:** This README covers setup and architecture
+**Judge Deliverables:**
 
-**To submit:**
-```bash
-# Compress everything
-zip -r leighton_<yourname>.zip . -x ".env*" "dart_defines.json" "node_modules" "build" "dist"
+| Item | Link / File |
+|---|---|
+| 🌐 Live Prototype | https://leighton.vercel.app |
+| 💻 Source Code Repo | https://github.com/azcharia/leighton |
+| 📹 Demo Video | (with captions explaining workflow) |
+| 📦 Submission ZIP | `azcharia_Leighton.zip` |
 
-# Send to marketing@helden-inc.com
-```
+**Instructions:**
+1. Compress project into named ZIP:
+   ```bash
+   # Format: GroupNameOrIndividualName_CaseName.zip
+   zip -r azcharia_Leighton.zip . \
+     -x ".env*" "dart_defines.json" "node_modules" \
+     "build" "dist" ".dart_tool" ".git"
+   ```
+
+2. **Email to:** `marketing@helden-inc.com`
+   - **Subject:** Leighton AI-Assisted Punchlist Submission
+   - **Attachments:**
+     - `azcharia_Leighton.zip` (source code)
+     - `demo.mp4` (demo video with captions)
+   - **Body:** Include live link https://leighton.vercel.app + GitHub link
+
+3. **Deadline:** March 11, 2026 by 3:00 PM UTC+8
 
 ---
 
