@@ -1,9 +1,14 @@
-# Leighton Asia — AI-Assisted Punchlist MVP
+# 🏗️ Leighton Asia — AI-Assisted Punchlist MVP
 
-A hackathon-ready, production-quality MVP that replaces manual construction
-site form-filling with AI-powered defect logging.
+![Flutter](https://img.shields.io/badge/Flutter-3.7.2-02569B?style=flat&logo=flutter)
+![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=flat&logo=supabase)
+![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=flat&logo=react)
+![Vite](https://img.shields.io/badge/Vite-6.1-646CFF?style=flat&logo=vite)
+![Groq](https://img.shields.io/badge/AI-Groq-f55036?style=flat)
 
-## 🚀 Quick Links for Judges
+A hackathon-ready, production-quality MVP that replaces manual construction site form-filling with AI-powered defect logging and analysis. 
+
+### 🚀 Quick Links for Judges
 
 | Action | Link |
 |---|---|
@@ -13,41 +18,135 @@ site form-filling with AI-powered defect logging.
 
 ---
 
-## Features
+## 📖 Overview
 
-✅ **Fast Defect Capture** — Photo (camera or gallery) + optional voice note
-✅ **AI Concrete Classification** — Classifies against 6 concrete defect types:
-   - Honeycombing / concrete voids
-   - Exposed reinforcement / insufficient cover
-   - Uneven finish / laitance
-   - Cold joints / step joints
-   - Residual formwork, nails, or tie-bolt holes
-   - Cracks and surface damage
+Construction site punchlists (defect logging) are traditionally manual, time-consuming, and prone to human error. **Leighton Asia AI Punchlist MVP** streamlines the QA/QC process by allowing field engineers to quickly capture photos and voice notes of concrete defects on-site. Using cutting-edge Vision and Audio AI models via **Groq**, the system automatically transcribes audio, identifies the type of defect, categorizes it, and syncs the data in real-time to a centralized web dashboard for project managers to review.
 
-✅ **Editable AI Predictions** — Engineers can override AI suggestions in the dashboard
-✅ **Location Tagging** — Record defect location (e.g. Block B, Level 3, Column C4)
-✅ **Real-time Dashboard** — Live updates visible across all browsers
-✅ **Export to Excel** — CSV with all defect data for further analysis
-✅ **Secure Architecture** — All credentials injected at runtime, never in source code
+## ✨ Key Features
+
+- **📱 Fast Defect Capture (Mobile):** Snap a photo (or upload from gallery) and record a voice note effortlessly.
+- **🎙️ AI Voice Transcription:** Uses **Groq Whisper API** to transcribe field engineer audio notes into text instantly.
+- **🧠 AI Concrete Classification:** Leverages **Groq Vision API** (`llama-4-scout-17b-16e-instruct`) to classify images against 6 common concrete defects:
+  - Honeycombing / concrete voids
+  - Exposed reinforcement / insufficient cover
+  - Uneven finish / laitance
+  - Cold joints / step joints
+  - Residual formwork, nails, or tie-bolt holes
+  - Cracks and surface damage
+- **✏️ Editable AI Predictions:** Project managers can manually override AI suggestions via the web dashboard if needed.
+- **📍 Location Tagging:** Accurately record structural locations (e.g., Block B, Level 3, Column C4).
+- **💻 Real-Time Web Dashboard:** Live, instant synchronization across all connected clients powered by Supabase Realtime.
+- **📊 Export to Excel:** Download all defect data as a CSV for reporting and compliance analysis.
+- **🔐 Secure Architecture:** All API keys and credentials are injected at runtime, ensuring sensitive data is entirely isolated from the source code.
 
 ---
 
-## Architecture
+## 🛠 Tech Stack
 
-```
-Flutter App (Mobile)
-  └─ Camera + Voice Note
-  └─ Groq Whisper API  →  Transcript
-  └─ Supabase Storage  →  image_url
-  └─ Supabase defects  →  INSERT row (status: "Pending AI")
+| Domain | Technology |
+|---|---|
+| **Mobile App** | [Flutter](https://flutter.dev/) (Dart 3.7+), `camera`, `record`, `image_picker` |
+| **Web Dashboard** | [React 18](https://react.dev/), [Vite](https://vitejs.dev/), [TailwindCSS](https://tailwindcss.com/), [Lucide Icons](https://lucide.dev/) |
+| **Backend / BaaS** | [Supabase](https://supabase.com/) (Postgres DB, Storage, Auth, Realtime) |
+| **Edge Functions** | Supabase Edge Functions (Deno / TypeScript) |
+| **AI Inference** | [Groq](https://groq.com/) (Whisper for Audio, LLaMA Vision for Image Classification) |
+
+---
+
+## 🏗 System Architecture
+
+```text
+📱 Flutter App (Mobile Engineer)
+  ├─ 1. Capture Photo & Record Voice Note
+  ├─ 2. Groq Whisper API  → Transcribes voice note to text
+  ├─ 3. Supabase Storage  → Uploads image & returns `image_url`
+  └─ 4. Supabase Database → INSERT row (`status: "Pending AI"`)
           │
           ▼  (Postgres trigger → pg_net HTTP POST)
-Supabase Edge Function  classify-defect
-  └─ Groq Vision API  (llama-4-scout-17b-16e-instruct)
-  └─ UPDATE defects row  (status: "Processed", AI fields filled)
+⚙️ Supabase Edge Function (`classify-defect`)
+  ├─ Fetches Image URL + Transcript
+  ├─ Groq Vision API (`llama-4-scout-17b-16e-instruct`) → Analyzes image
+  └─ UPDATE Database → SET `status: "Processed"`, fills AI classifications
           │
           ▼  (Supabase Realtime)
-React Dashboard (Web)
+💻 React Dashboard (Web Manager)
+  └─ Instantly updates UI for project managers to review
+```
+
+---
+
+## 📂 Repository Structure
+
+```text
+.
+├── android/             # Native Android shell for Flutter
+├── ios/                 # Native iOS shell for Flutter
+├── lib/                 # 📱 Flutter App UI and Logic (Dart)
+├── supabase/
+│   ├── functions/       # ⚙️ Edge Functions (Deno / TypeScript)
+│   └── migrations/      # 🗄️ Database Migrations (Postgres SQL)
+├── web-dashboard/       # 💻 React Web App (Vite, TS, Tailwind)
+├── pubspec.yaml         # Flutter dependencies
+└── README.md            # You are here
+```
+
+---
+
+## 🚀 Getting Started
+
+To run this project locally, you will need to set up the Backend (Supabase), the Web Dashboard, and the Mobile App.
+
+### 0. Prerequisites
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`>= 3.7.2`)
+- [Node.js](https://nodejs.org/) (v18+)
+- [Supabase CLI](https://supabase.com/docs/guides/cli) (Optional, for local backend linking)
+- Groq API Key ([Get it here](https://console.groq.com/))
+- Supabase Project URL and Anon Key ([Create project here](https://database.new/))
+
+### 1. Database Setup (Supabase)
+Run the SQL scripts located in `supabase/migrations/` in your Supabase SQL Editor.
+1. `20260308000000_initial_schema.sql`
+2. `20260310000001_add_location.sql`
+
+Deploy the Edge Function to your Supabase project:
+```bash
+cd supabase
+supabase functions deploy classify-defect --no-verify-jwt
+supabase secrets set GROQ_API_KEY="your-groq-api-key"
+```
+
+### 2. Web Dashboard Setup
+```bash
+cd web-dashboard
+npm install
+
+# Create a .env file with:
+# VITE_SUPABASE_URL=your_supabase_url
+# VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+npm run dev
+```
+
+### 3. Flutter Mobile App Setup
+Make sure you have an Android/iOS emulator running or a physical device connected.
+```bash
+flutter pub get
+
+# Run the app with injected credentials
+flutter run \
+  --dart-define=SUPABASE_URL="your_supabase_url" \
+  --dart-define=SUPABASE_ANON_KEY="your_supabase_anon_key" \
+  --dart-define=GROQ_API_KEY="your_groq_api_key"
+```
+
+> **Security Note:** Do not hardcode your keys inside `main.dart`. The project uses `--dart-define` to inject them securely at compile-time to keep your repository safe.
+
+---
+
+## 📄 License & Credits
+
+Built for the **Leighton Asia Hackathon**. 
+Concept and development by the respective project team. All rights reserved.
   └─ Live table of all defects
   └─ Click to view photo + AI predictions
   └─ Edit & save AI predictions
