@@ -14,7 +14,7 @@ A hackathon-ready, production-quality MVP that replaces manual construction site
 |---|---|
 | **Try the app** | https://leighton.vercel.app |
 | **View source code** | https://github.com/azcharia/leighton |
-| **Demo video** | Included in submission ZIP |
+| **Demo video** | https://drive.google.com/file/d/1q-Y1UHx0D5lUxl3pBuWeaL2TrEEYPH_D/view?usp=sharing |
 
 ---
 
